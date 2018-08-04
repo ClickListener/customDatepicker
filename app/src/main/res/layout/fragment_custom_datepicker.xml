@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".CustomDatepicker.internal.CustomDatePickerFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <View
+        android:id="@+id/mark_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#30000000">
+
+    </View>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true"
+        android:clickable="true"
+        android:focusable="true">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dd_dimen_1px"
+            android:background="#dadadf"/>
+
+        <LinearLayout
+            android:id="@+id/operate_layout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dd_dimen_84px"
+            android:orientation="horizontal"
+            android:background="#f9f9f9"
+            android:clickable="true"
+            android:paddingLeft="@dimen/dd_dimen_30px"
+            android:paddingRight="@dimen/dd_dimen_30px">
+
+            <TextView
+                android:id="@+id/cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:gravity="center"
+                android:text="取消"
+                android:textColor="#999999"
+                android:textSize="@dimen/dd_dimen_30px" />
+
+            <TextView
+                android:id="@+id/title_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textColor="#666666"
+                android:textSize="@dimen/dd_dimen_34px" />
+
+            <TextView
+                android:id="@+id/complete"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:gravity="center"
+                android:text="确定"
+                android:textColor="#f6b340"
+                android:textSize="@dimen/dd_dimen_30px" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dd_dimen_1px"
+            android:background="#e5e5e5" />
+
+        <LinearLayout
+            android:id="@+id/wheelContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#ffffff"
+            android:orientation="horizontal">
+
+            <!--<com.example.zhangxu.datepickerpractise.thirdparty.spinnerwheel.WheelVerticalView-->
+                <!--android:id="@+id/year"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="2"-->
+                <!--app:selectionDivider="@drawable/divider_dark_gradient_horizontal" />-->
+
+            <!--<com.example.zhangxu.datepickerpractise.thirdparty.spinnerwheel.WheelVerticalView-->
+                <!--android:id="@+id/date"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="1"-->
+                <!--app:selectionDivider="@drawable/divider_dark_gradient_horizontal" />-->
+
+            <!--<com.example.zhangxu.datepickerpractise.thirdparty.spinnerwheel.WheelVerticalView-->
+                <!--android:id="@+id/hour"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="2"-->
+                <!--app:selectionDivider="@drawable/divider_dark_gradient_horizontal"/>-->
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+
+</RelativeLayout>
