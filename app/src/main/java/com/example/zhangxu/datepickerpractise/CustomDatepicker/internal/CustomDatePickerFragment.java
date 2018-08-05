@@ -14,10 +14,10 @@ import com.example.zhangxu.datepickerpractise.CustomDatepicker.CustomDatePicker;
 import com.example.zhangxu.datepickerpractise.CustomDatepicker.DateCallback;
 import com.example.zhangxu.datepickerpractise.R;
 import com.example.zhangxu.datepickerpractise.thirdparty.spinnerwheel.AbstractWheel;
-import com.example.zhangxu.datepickerpractise.thirdparty.spinnerwheel.OnWheelChangedListener;
 import com.example.zhangxu.datepickerpractise.thirdparty.spinnerwheel.OnWheelScrollListener;
 import com.example.zhangxu.datepickerpractise.thirdparty.spinnerwheel.WheelVerticalView;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -34,23 +34,26 @@ public class CustomDatePickerFragment extends Fragment {
 
     private View view;
 
+
     private DateCallback dateCallback;
 
     private DateBean dateBean;
 
 
 
-    private ArrayList<Integer> dayList = new ArrayList<>();
-    private ArrayList<Integer> monthList = new ArrayList<>();
-    private ArrayList<Integer> yearList = new ArrayList<>();
-    private ArrayList<Integer> hourList = new ArrayList<>();
-    private ArrayList<Integer> minuteList = new ArrayList<>();
+    private ArrayList<Calendar> dayList = new ArrayList<>();
+
+    private ArrayList<Calendar> monthList = new ArrayList<>();
+
+    private ArrayList<Calendar> yearList = new ArrayList<>();
+
+    private ArrayList<String> hourList = new ArrayList<>();
+    private ArrayList<String> minuteList = new ArrayList<>();
 
     private Calendar startCalendar;
     private Calendar endCalendar;
 
     private Calendar currentCalendar;
-
 
     // 存放生成的wheel
     private Map<CustomDatePicker.TimeType, AbstractWheel> wheelMap = new HashMap<>();
@@ -72,191 +75,76 @@ public class CustomDatePickerFragment extends Fragment {
         currentCalendar = dateBean.getShowCalendar();
 
         initYear();
-
         initMonth();
         initDay();
-        initHour();
-        initMinute();
-
-
-
+        initHour(1, 23);
+        initMinute(1, 59);
 
     }
 
 
+    // 初始化年份列表
     private void initYear() {
 
-        yearList.clear();
-        for (int i = startCalendar.get(Calendar.YEAR); i <= endCalendar.get(Calendar.YEAR); i++) {
-            yearList.add(i);
+        Calendar calendar = (Calendar) startCalendar.clone();
+
+        while (calendar.before(endCalendar) ||
+                (calendar.after(endCalendar) && calendar.get(Calendar.YEAR) == endCalendar.get(Calendar.YEAR))) {
+            yearList.add(calendar);
+            calendar = (Calendar) calendar.clone();
+            calendar.add(Calendar.YEAR, 1);
+
         }
+
     }
 
+
+    // 初始化月份列表
     private void initMonth() {
 
-        monthList.clear();
-        if (currentCalendar.get(Calendar.YEAR) == startCalendar.get(Calendar.YEAR)) {
+        Calendar calendar = (Calendar) startCalendar.clone();
 
-            for (int i = startCalendar.get(Calendar.MONTH); i <= Calendar.DECEMBER; i++) {
-                monthList.add(i + 1);
-            }
+        while (calendar.before(endCalendar) ||
+                (calendar.after(endCalendar) && calendar.get(Calendar.MONTH) == endCalendar.get(Calendar.MONTH))) {
 
-            if (currentCalendar.before(startCalendar)) {
-                currentCalendar.set(Calendar.MONTH, startCalendar.get(Calendar.MONTH));
-            }
-            return;
+            monthList.add(calendar);
+            calendar = (Calendar) calendar.clone();
+            calendar.add(Calendar.MONTH, 1);
         }
-
-        if (currentCalendar.get(Calendar.YEAR) == endCalendar.get(Calendar.YEAR)) {
-            for (int i = Calendar.JANUARY; i <= endCalendar.get(Calendar.MONTH); i++) {
-                monthList.add(i + 1);
-            }
-
-            if (currentCalendar.after(endCalendar)) {
-                currentCalendar.set(Calendar.MONTH, endCalendar.get(Calendar.MONTH));
-            }
-
-            return;
-        }
-
-        for (int i = Calendar.JANUARY; i <= Calendar.DECEMBER; i++) {
-            monthList.add(i + 1);
-        }
-
-
     }
 
+
+    // 初始化天数列表
     private void initDay() {
 
-        dayList.clear();
+        Calendar calendar = (Calendar) startCalendar.clone();
 
-        if (currentCalendar.get(Calendar.YEAR) == startCalendar.get(Calendar.YEAR)
-                && currentCalendar.get(Calendar.MONTH) == startCalendar.get(Calendar.MONTH)) {
+        while (calendar.before(endCalendar) ||
+                (calendar.after(endCalendar) && calendar.get(Calendar.DAY_OF_MONTH) == endCalendar.get(Calendar.DAY_OF_MONTH))) {
+            dayList.add(calendar);
+            calendar = (Calendar) calendar.clone();
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
 
-
-            for (int i = startCalendar.get(Calendar.DAY_OF_MONTH);
-                 i <= currentCalendar.getActualMaximum(Calendar.DAY_OF_MONTH); i++) {
-                dayList.add(i);
-            }
-
-            if (currentCalendar.before(startCalendar)) {
-                currentCalendar.set(Calendar.DAY_OF_MONTH, startCalendar.get(Calendar.DAY_OF_MONTH));
-            }
-
-            return;
-        }
-
-        if (currentCalendar.get(Calendar.YEAR) == endCalendar.get(Calendar.YEAR)
-                && currentCalendar.get(Calendar.MONTH) == endCalendar.get(Calendar.MONTH)) {
-
-            for (int i = currentCalendar.getActualMinimum(Calendar.DAY_OF_MONTH);
-                 i <= endCalendar.get(Calendar.DAY_OF_MONTH); i++) {
-                dayList.add(i);
-            }
-
-            if (currentCalendar.after(endCalendar)) {
-                currentCalendar.set(Calendar.DAY_OF_MONTH, endCalendar.get(Calendar.DAY_OF_MONTH));
-            }
-
-            return;
-        }
-
-        for (int i = currentCalendar.getActualMinimum(Calendar.DAY_OF_MONTH);
-             i <= currentCalendar.getActualMaximum(Calendar.DAY_OF_MONTH); i++) {
-            int max = currentCalendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-            dayList.add(i);
         }
 
     }
 
-    private void initHour() {
+    // 初始化 小时列表
+    private void initHour(int min, int max) {
 
         hourList.clear();
-        if (currentCalendar.get(Calendar.YEAR) == startCalendar.get(Calendar.YEAR)
-                && currentCalendar.get(Calendar.MONTH) == startCalendar.get(Calendar.MONTH)
-                && currentCalendar.get(Calendar.DAY_OF_MONTH) == startCalendar.get(Calendar.DAY_OF_MONTH)) {
-
-            for (int i = startCalendar.get(Calendar.HOUR_OF_DAY);
-                 i <= currentCalendar.getActualMaximum(Calendar.HOUR_OF_DAY); i++) {
-                hourList.add(i);
-            }
-
-            if (currentCalendar.before(startCalendar)) {
-                currentCalendar.set(Calendar.HOUR_OF_DAY, startCalendar.get(Calendar.HOUR_OF_DAY));
-            }
-
-            return;
-
-        }
-
-        if (currentCalendar.get(Calendar.YEAR) == endCalendar.get(Calendar.YEAR)
-                && currentCalendar.get(Calendar.MONTH) == endCalendar.get(Calendar.MONTH)
-                && currentCalendar.get(Calendar.DAY_OF_MONTH) == endCalendar.get(Calendar.DAY_OF_MONTH)) {
-
-            for (int i = currentCalendar.getActualMinimum(Calendar.HOUR_OF_DAY);
-                 i <= endCalendar.get(Calendar.HOUR_OF_DAY); i++) {
-                hourList.add(i);
-            }
-
-            if (currentCalendar.after(endCalendar)) {
-                currentCalendar.set(Calendar.HOUR_OF_DAY, endCalendar.get(Calendar.HOUR_OF_DAY));
-            }
-
-            return;
-        }
-
-        for (int i = currentCalendar.getActualMinimum(Calendar.HOUR_OF_DAY);
-             i <= currentCalendar.getActualMaximum(Calendar.HOUR_OF_DAY); i++) {
-            hourList.add(i);
+        for (int i = min; i <= max; i++) {
+            hourList.add(String.valueOf(i));
         }
     }
-
-    private void initMinute() {
+    // 初始化分钟列表
+    private void initMinute(int min, int max) {
 
         minuteList.clear();
-
-        if (currentCalendar.get(Calendar.YEAR) == startCalendar.get(Calendar.YEAR)
-                && currentCalendar.get(Calendar.MONTH) == startCalendar.get(Calendar.MONTH)
-                && currentCalendar.get(Calendar.DAY_OF_MONTH) == startCalendar.get(Calendar.DAY_OF_MONTH)
-                && currentCalendar.get(Calendar.HOUR_OF_DAY) == startCalendar.get(Calendar.HOUR_OF_DAY)) {
-
-            for (int i = startCalendar.get(Calendar.MINUTE);
-                 i <= currentCalendar.getActualMaximum(Calendar.MINUTE); i++) {
-                minuteList.add(i);
-            }
-
-            if (currentCalendar.before(startCalendar)) {
-                currentCalendar.set(Calendar.MINUTE, startCalendar.get(Calendar.MINUTE));
-            }
-
-            return;
-
-        }
-
-        if (currentCalendar.get(Calendar.YEAR) == endCalendar.get(Calendar.YEAR)
-                && currentCalendar.get(Calendar.MONTH) == endCalendar.get(Calendar.MONTH)
-                && currentCalendar.get(Calendar.DAY_OF_MONTH) == endCalendar.get(Calendar.DAY_OF_MONTH)
-                && currentCalendar.get(Calendar.HOUR_OF_DAY) == endCalendar.get(Calendar.HOUR_OF_DAY)) {
-
-            for (int i = currentCalendar.getActualMinimum(Calendar.MINUTE);
-                 i <= endCalendar.get(Calendar.MINUTE); i++) {
-                minuteList.add(i);
-            }
-
-            if (currentCalendar.after(endCalendar)) {
-                currentCalendar.set(Calendar.MINUTE, endCalendar.get(Calendar.MINUTE));
-            }
-
-            return;
-        }
-
-        for (int i = currentCalendar.getActualMinimum(Calendar.MINUTE);
-             i <= currentCalendar.getActualMaximum(Calendar.MINUTE); i++) {
-            minuteList.add(i);
+        for (int i = min; i <= max; i++) {
+            minuteList.add(String.valueOf(i));
         }
     }
-
-
 
 
     @Override
@@ -269,6 +157,7 @@ public class CustomDatePickerFragment extends Fragment {
 
         return view;
     }
+
 
     private void initView() {
 
@@ -285,18 +174,22 @@ public class CustomDatePickerFragment extends Fragment {
             loadWheelView(wheelContainer, params, wheelTimeInfo);
         }
 
-        updateWheel();
 
         view.findViewById(R.id.complete).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-//                dateCallback.onCallback(yearArrayAdapter.getItemTime(monthWheel.getCurrentItem()));
+                dateCallback.onCallback(currentCalendar);
             }
         });
 
+        updateWheel();
+
+
     }
 
+
+    // 根据设置的Wheel个数,格式，动态加载Wheel
     private void loadWheelView(LinearLayout wheelContainer, LinearLayout.LayoutParams params, WheelTimeInfo timeInfo) {
 
 
@@ -306,25 +199,26 @@ public class CustomDatePickerFragment extends Fragment {
         AbstractWheel wheel = new WheelVerticalView(getActivity());
         wheel.setTag(timeInfo.getTimeType());
         wheel.setLayoutParams(params);
-        wheel.setVisibleItems(timeInfo.getVisiableItem());
+        wheel.setVisibleItems(dateBean.getVisible());
+
 
         WheelArrayAdapter arrayAdapter = new WheelArrayAdapter(getActivity());
         ArrayList<String> stringArrayList = new ArrayList<>();
         switch (timeInfo.getTimeType()) {
             case YEAR:
-                stringArrayList = calendarToString(yearList);
+                stringArrayList = calendarToString(yearList, dateFormat);
                 break;
             case MONTH:
-                stringArrayList = calendarToString(monthList);
+                stringArrayList = calendarToString(monthList, dateFormat);
                 break;
             case DAY:
-                stringArrayList = calendarToString(dayList);
+                stringArrayList = calendarToString(dayList, dateFormat);
                 break;
             case HOUR:
-                stringArrayList = calendarToString(hourList);
+                stringArrayList = hourList;
                 break;
             case MINUTE:
-                stringArrayList = calendarToString(minuteList);
+                stringArrayList = minuteList;
                 break;
 
         }
@@ -332,7 +226,6 @@ public class CustomDatePickerFragment extends Fragment {
 
         wheel.setViewAdapter(arrayAdapter);
 
-        wheel.addChangingListener(onWheelChangedListener);
         wheel.addScrollingListener(onWheelScrollListener);
 
         wheelMap.put(timeInfo.getTimeType(), wheel);
@@ -340,7 +233,6 @@ public class CustomDatePickerFragment extends Fragment {
         wheelContainer.addView(wheel);
 
     }
-
     private OnWheelScrollListener onWheelScrollListener = new OnWheelScrollListener() {
         @Override
         public void onScrollingStarted(AbstractWheel wheel) {
@@ -350,150 +242,171 @@ public class CustomDatePickerFragment extends Fragment {
         @Override
         public void onScrollingFinished(AbstractWheel wheel) {
 
+            updateWheel(wheel);
 
-            switch ((CustomDatePicker.TimeType) wheel.getTag()) {
-                case YEAR:
-
-                    currentCalendar.set(Calendar.YEAR, yearList.get(wheel.getCurrentItem()));
-
-                    initMonth();
-                    initDay();
-                    initHour();
-                    initMinute();
-
-                    break;
-
-                case MONTH:
-
-
-                    // Calendar设置月份时，如果当前日字段大于要设置的月份的天数，则自动跳转到合适的月份，而不是设置的月份
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.set(Calendar.DAY_OF_MONTH, 1);
-                    calendar.set(Calendar.MONTH, monthList.get(wheel.getCurrentItem()) - 1);
-
-                    if (currentCalendar.get(Calendar.DAY_OF_MONTH) > calendar.getActualMaximum(Calendar.DAY_OF_MONTH)) {
-                        currentCalendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
-                    }
-
-                    currentCalendar.set(Calendar.MONTH, monthList.get(wheel.getCurrentItem()) - 1);
-
-
-                    initDay();
-                    initHour();
-                    initMinute();
-
-
-                    break;
-
-                case DAY:
-                    currentCalendar.set(Calendar.DAY_OF_MONTH, dayList.get(wheel.getCurrentItem()));
-
-                    initHour();
-                    initMinute();
-
-
-                    break;
-
-                case HOUR:
-
-                    currentCalendar.set(Calendar.HOUR_OF_DAY, hourList.get(wheel.getCurrentItem()));
-
-                    initMinute();
-
-                    break;
-
-                case MINUTE:
-
-                    currentCalendar.set(Calendar.MINUTE, minuteList.get(wheel.getCurrentItem()));
-
-                    break;
-            }
-
-            updateWheel();
-        }
-    };
-
-    private OnWheelChangedListener onWheelChangedListener = new OnWheelChangedListener() {
-        @Override
-        public void onChanged(AbstractWheel wheel, int oldValue, int newValue) {
-            // wheel.getTag()
-            // 1 check wheel type
-            // update current calendar
-            // refresh all wheel
         }
     };
 
 
 
     // 处理日期为相应的时间格式
-    private ArrayList<String> calendarToString(ArrayList<Integer> calendarArrayList) {
+    private ArrayList<String> calendarToString(ArrayList<Calendar> calendarArrayList, DateFormat dateFormat) {
 
         ArrayList<String> stringArrayList = new ArrayList<>();
-        for (Integer integer: calendarArrayList) {
-            stringArrayList.add(String.valueOf(integer));
+        for (Calendar calendar: calendarArrayList) {
+            stringArrayList.add(dateFormat.format(calendar.getTime()));
         }
-
         return  stringArrayList;
     }
 
 
-    // 根据List数据更新Wheel
+    // 根据当前时间，更新各个Wheel
     private void updateWheel() {
         for (Map.Entry wheel: wheelMap.entrySet()) {
 
             AbstractWheel abstractWheel = (AbstractWheel) wheel.getValue();
 
-            WheelArrayAdapter wheelArrayAdapter = new WheelArrayAdapter(getActivity());
-
-
             switch ((CustomDatePicker.TimeType)wheel.getKey()) {
                 case YEAR:
-                    wheelArrayAdapter.setTimes(calendarToString(yearList));
 
-                    abstractWheel.setCurrentItem(yearList.indexOf(currentCalendar.get(Calendar.YEAR)));
+                    for (int i = 0; i < yearList.size(); i ++ ) {
+                        if (yearList.get(i).get(Calendar.YEAR) == currentCalendar.get(Calendar.YEAR)) {
+                            abstractWheel.setCurrentItem(i);
+                        }
+                    }
                     break;
 
                 case MONTH:
-                    wheelArrayAdapter.setTimes(calendarToString(monthList));
 
-                    int month = monthList.get(0) > (currentCalendar.get(Calendar.MONTH) + 1) ?
-                            0 : monthList.indexOf(currentCalendar.get(Calendar.MONTH) + 1);
-
-                    abstractWheel.setCurrentItem(month);
+                    for (int i = 0; i < monthList.size(); i ++ ) {
+                        if (monthList.get(i).get(Calendar.YEAR) == currentCalendar.get(Calendar.YEAR)
+                                && monthList.get(i).get(Calendar.MONTH) == currentCalendar.get(Calendar.MONTH)) {
+                            abstractWheel.setCurrentItem(i);
+                        }
+                    }
                     break;
 
                 case DAY:
-                    wheelArrayAdapter.setTimes(calendarToString(dayList));
-
-                    int day = dayList.get(0) > (currentCalendar.get(Calendar.DAY_OF_MONTH)) ?
-                            0 : dayList.indexOf(currentCalendar.get(Calendar.DAY_OF_MONTH));
-
-                    abstractWheel.setCurrentItem(day);
+                    for (int i = 0; i < dayList.size(); i ++ ) {
+                        if (dayList.get(i).get(Calendar.YEAR) == currentCalendar.get(Calendar.YEAR)
+                                && dayList.get(i).get(Calendar.MONTH) == currentCalendar.get(Calendar.MONTH)
+                                && dayList.get(i).get(Calendar.DAY_OF_MONTH) == currentCalendar.get(Calendar.DAY_OF_MONTH)) {
+                            abstractWheel.setCurrentItem(i);
+                        }
+                    }
                     break;
 
                 case HOUR:
-                    wheelArrayAdapter.setTimes(calendarToString(hourList));
 
-                    int hour = hourList.get(0) > currentCalendar.get(Calendar.HOUR_OF_DAY) ?
-                            0 : hourList.indexOf(currentCalendar.get(Calendar.HOUR_OF_DAY));
 
-                    abstractWheel.setCurrentItem(hour);
+                    for (int i = 0; i < hourList.size(); i ++ ) {
+                        if (Integer.parseInt(hourList.get(i)) == currentCalendar.get(Calendar.HOUR_OF_DAY)) {
+                            abstractWheel.setCurrentItem(i);
+                        }
+                    }
+
+                    WheelArrayAdapter hourWheelAdapter = new WheelArrayAdapter(getActivity());
+
+                    hourWheelAdapter.setTimes(hourList);
+
+                    abstractWheel.setViewAdapter(hourWheelAdapter);
+
+
                     break;
 
                 case MINUTE:
-                    wheelArrayAdapter.setTimes(calendarToString(minuteList));
 
 
-                    int minute = minuteList.get(0) > currentCalendar.get(Calendar.MINUTE) ?
-                            0 : minuteList.indexOf(currentCalendar.get(Calendar.MINUTE));
+                    for (int i = 0; i < minuteList.size(); i ++ ) {
+                        if (Integer.parseInt(minuteList.get(i)) == currentCalendar.get(Calendar.MINUTE)) {
+                            abstractWheel.setCurrentItem(i);
+                        }
+                    }
 
-                    abstractWheel.setCurrentItem(minute);
+                    WheelArrayAdapter minuteWheelAdapter = new WheelArrayAdapter(getActivity());
+
+                    minuteWheelAdapter.setTimes(minuteList);
+
+                    abstractWheel.setViewAdapter(minuteWheelAdapter);
+
                     break;
             }
 
-            abstractWheel.setViewAdapter(wheelArrayAdapter);
         }
     }
+
+
+
+    // 当Wheel滚动结束时，根据转动到的位置重新设置当前时间
+    private void updateWheel(AbstractWheel wheel) {
+
+
+        switch ((CustomDatePicker.TimeType)wheel.getTag()) {
+            case YEAR:
+
+                currentCalendar.set(Calendar.YEAR, yearList.get(wheel.getCurrentItem()).get(Calendar.YEAR));
+
+                setCurrentCalendar();
+
+                break;
+
+            case MONTH:
+                currentCalendar.set(Calendar.YEAR, monthList.get(wheel.getCurrentItem()).get(Calendar.YEAR));
+                currentCalendar.set(Calendar.MONTH, monthList.get(wheel.getCurrentItem()).get(Calendar.MONTH));
+
+                setCurrentCalendar();
+
+                break;
+
+            case DAY:
+                currentCalendar.set(Calendar.YEAR, dayList.get(wheel.getCurrentItem()).get(Calendar.YEAR));
+                currentCalendar.set(Calendar.MONTH, dayList.get(wheel.getCurrentItem()).get(Calendar.MONTH));
+                currentCalendar.set(Calendar.DAY_OF_MONTH, dayList.get(wheel.getCurrentItem()).get(Calendar.DAY_OF_MONTH));
+
+                setCurrentCalendar();
+
+                break;
+
+            case HOUR:
+                currentCalendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(hourList.get(wheel.getCurrentItem())));
+
+                setCurrentCalendar();
+                break;
+
+            case MINUTE:
+                currentCalendar.set(Calendar.MINUTE, Integer.parseInt(minuteList.get(wheel.getCurrentItem())));
+                break;
+        }
+
+
+        updateWheel();
+    }
+
+
+    // 设置当前时间
+    private void setCurrentCalendar() {
+        if (currentCalendar.after(endCalendar) || currentCalendar.equals(endCalendar)) {
+            currentCalendar = (Calendar) endCalendar.clone();
+
+            int hour_max = endCalendar.get(Calendar.HOUR_OF_DAY);
+            initHour(1, hour_max);
+
+            int minute_max = endCalendar.get(Calendar.MINUTE);
+            initMinute(1, minute_max);
+        } else if (currentCalendar.before(startCalendar) || currentCalendar.equals(startCalendar)) {
+            currentCalendar = (Calendar) startCalendar.clone();
+
+            int hour_min = startCalendar.get(Calendar.HOUR_OF_DAY);
+            initHour(hour_min, 24);
+
+            int munite_min = startCalendar.get(Calendar.MINUTE);
+            initMinute(munite_min, 60);
+        } else {
+            initHour(1, 23);
+            initMinute(1, 59);
+        }
+    }
+
 
 
 

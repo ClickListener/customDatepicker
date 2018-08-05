@@ -1,5 +1,6 @@
 package com.example.zhangxu.datepickerpractise.CustomDatepicker;
 
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -8,6 +9,6 @@ import java.util.Date;
  */
 public interface DateCallback {
 
-    void onCallback(long back);
+    void onCallback(Calendar selectCalendar);
 
 }

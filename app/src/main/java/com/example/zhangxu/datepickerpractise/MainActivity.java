@@ -45,32 +45,33 @@ public class MainActivity extends AppCompatActivity {
         final CustomDatePicker customDatePicker = CustomDatePicker.createDataPicker();
 
         Calendar startCalendar = Calendar.getInstance();
-        startCalendar.set(2010, Calendar.JULY, 12, 11, 30);
+        startCalendar.set(2016, Calendar.JULY, 12, 11, 30);
 
         Calendar endCalendar = Calendar.getInstance();
         endCalendar.set(2018, Calendar.JANUARY, 1, 23, 30);
 
         Calendar currentCalendar = Calendar.getInstance();
-        currentCalendar.set(2014, Calendar.JANUARY, 2, 13, 30);
+        currentCalendar.set(2017, Calendar.JANUARY, 2, 13, 30);
 
 
-        customDatePicker.setStartCalendar(startCalendar);
-        customDatePicker.setEndCalendar(endCalendar);
-        customDatePicker.setCalendar(currentCalendar);
+        customDatePicker.setStartCalendar(startCalendar)
+                .setEndCalendar(endCalendar)
+                .setCalendar(currentCalendar)
+                .setVisibleItem(3);
+
 
         customDatePicker.init(MainActivity.this)
-                .addTimeColumn(CustomDatePicker.TimeType.YEAR, new SimpleDateFormat("yyyy"), 3, 5)
-                .addTimeColumn(CustomDatePicker.TimeType.MONTH, new SimpleDateFormat("MM"), 3, 5)
-                .addTimeColumn(CustomDatePicker.TimeType.DAY, new SimpleDateFormat("dd"), 3, 5)
-                .addTimeColumn(CustomDatePicker.TimeType.HOUR, new SimpleDateFormat("HH"), 3, 5)
-                .addTimeColumn(CustomDatePicker.TimeType.MINUTE, new SimpleDateFormat("mm"), 3, 5)
+//                .addTimeColumn(CustomDatePicker.TimeType.YEAR, new SimpleDateFormat("yyyy"), 5)
+                .addTimeColumn(CustomDatePicker.TimeType.MONTH, new SimpleDateFormat("yyyy-MM"), 5)
+//                .addTimeColumn(CustomDatePicker.TimeType.DAY, new SimpleDateFormat("dd"), 5)
+//                .addTimeColumn(CustomDatePicker.TimeType.HOUR, new SimpleDateFormat("HH"), 5)
+//                .addTimeColumn(CustomDatePicker.TimeType.MINUTE, new SimpleDateFormat("mm"), 5)
                 .display(R.id.base_extra_layout, new DateCallback() {
-            @Override
-            public void onCallback(long back) {
-                textView.setText("Date = " + back);
-                customDatePicker.dismiss();
-            }
-        });
+                    @Override
+                    public void onCallback(Calendar selectCalendar) {
+                        textView.setText(new SimpleDateFormat("yyyy-MM-dd HH:mm").format(selectCalendar.getTime()));
+                    }
+                });
 
 
     }

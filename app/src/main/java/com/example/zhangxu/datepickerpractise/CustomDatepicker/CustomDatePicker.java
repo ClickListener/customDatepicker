@@ -38,8 +38,9 @@ public abstract class CustomDatePicker {
     public abstract CustomDatePicker setCalendar(Calendar calendar);
     public abstract CustomDatePicker setStartCalendar(Calendar calendar);
     public abstract CustomDatePicker setEndCalendar(Calendar calendar);
+    public abstract CustomDatePicker setVisibleItem(int visible);
     public abstract CustomDatePicker setTitle(String title);
-    public abstract CustomDatePicker addTimeColumn(TimeType timeType, DateFormat dateFormat, int interval, int visibleItem);
+    public abstract CustomDatePicker addTimeColumn(TimeType timeType, DateFormat dateFormat, int interval);
 
     public abstract void display(int parentResId, DateCallback dateCallback);
 

@@ -25,6 +25,8 @@ public class CustomDatePickerImpl extends CustomDatePicker {
 
     private String title;
 
+    private int visible;
+
     private Calendar startCalendar;
     private Calendar endCalendar;
     private Calendar showCalendar;
@@ -58,19 +60,23 @@ public class CustomDatePickerImpl extends CustomDatePicker {
     }
 
     @Override
+    public CustomDatePicker setVisibleItem(int visible) {
+        this.visible = visible;
+        return this;
+    }
+
+    @Override
     public CustomDatePicker setTitle(String title) {
         this.title = title;
         return this;
     }
 
     @Override
-    public CustomDatePicker addTimeColumn(TimeType timeType, DateFormat dateFormat, int interval, int visibleItem) {
+    public CustomDatePicker addTimeColumn(TimeType timeType, DateFormat dateFormat, int visibleItem) {
 
         WheelTimeInfo timeInfo = new WheelTimeInfo();
         timeInfo.setTimeType(timeType);
         timeInfo.setDateFormat(dateFormat);
-        timeInfo.setInterval(interval);
-        timeInfo.setVisiableItem(visibleItem);
 
         timeInfoArrayList.add(timeInfo);
         return this;
@@ -122,6 +128,8 @@ public class CustomDatePickerImpl extends CustomDatePicker {
         dateBean.setStartCalendar(startCalendar);
         dateBean.setEndCalendar(endCalendar);
         dateBean.setTitle(title);
+        dateBean.setVisible(visible);
+
 
 
         return dateBean;

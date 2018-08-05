@@ -14,6 +14,10 @@ public class DateBean {
 
     private String title;
 
+
+
+    private int visible;
+
     private Calendar showCalendar;
 
     private ArrayList<WheelTimeInfo> timeInfoArrayList;
@@ -55,7 +59,13 @@ public class DateBean {
         this.showCalendar = showCalendar;
     }
 
+    public int getVisible() {
+        return visible;
+    }
 
+    public void setVisible(int visible) {
+        this.visible = visible;
+    }
 
     public ArrayList<WheelTimeInfo> getTimeInfoArrayList() {
         return timeInfoArrayList;
