@@ -72,11 +72,13 @@ public class CustomDatePickerImpl extends CustomDatePicker {
     }
 
     @Override
-    public CustomDatePicker addTimeColumn(TimeType timeType, DateFormat dateFormat, int visibleItem) {
+    public CustomDatePicker addTimeColumn(TimeType timeType, DateFormat dateFormat, int interval) {
 
         WheelTimeInfo timeInfo = new WheelTimeInfo();
         timeInfo.setTimeType(timeType);
         timeInfo.setDateFormat(dateFormat);
+
+        timeInfo.setInterval(interval);
 
         timeInfoArrayList.add(timeInfo);
         return this;

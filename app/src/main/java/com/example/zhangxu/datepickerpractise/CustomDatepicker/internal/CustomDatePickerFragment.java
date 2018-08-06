@@ -55,6 +55,12 @@ public class CustomDatePickerFragment extends Fragment {
 
     private Calendar currentCalendar;
 
+    private int yearInterval = 1;
+    private int monthInterval = 1;
+    private int dayInterval = 1;
+    private int hourInterval = 1;
+    private int minuteInterval = 1;
+
     // 存放生成的wheel
     private Map<CustomDatePicker.TimeType, AbstractWheel> wheelMap = new HashMap<>();
 
@@ -74,17 +80,39 @@ public class CustomDatePickerFragment extends Fragment {
 
         currentCalendar = dateBean.getShowCalendar();
 
-        initYear();
-        initMonth();
-        initDay();
-        initHour(1, 23);
-        initMinute(1, 59);
+        for (WheelTimeInfo wheelTimeInfo: dateBean.getTimeInfoArrayList()) {
+
+            switch (wheelTimeInfo.getTimeType()) {
+                case YEAR:
+                    yearInterval = wheelTimeInfo.getInterval();
+                    break;
+                case MONTH:
+                    monthInterval = wheelTimeInfo.getInterval();
+                    break;
+                case DAY:
+                    dayInterval = wheelTimeInfo.getInterval();
+                    break;
+                case HOUR:
+                    hourInterval = wheelTimeInfo.getInterval();
+                    break;
+                case MINUTE:
+                    minuteInterval = wheelTimeInfo.getInterval();
+                    break;
+
+            }
+        }
+
+        initYear(yearInterval);
+        initMonth(monthInterval);
+        initDay(dayInterval);
+        initHour(1, 23, hourInterval);
+        initMinute(0, 59, minuteInterval);
 
     }
 
 
     // 初始化年份列表
-    private void initYear() {
+    private void initYear(int interval) {
 
         Calendar calendar = (Calendar) startCalendar.clone();
 
@@ -92,7 +120,7 @@ public class CustomDatePickerFragment extends Fragment {
                 (calendar.after(endCalendar) && calendar.get(Calendar.YEAR) == endCalendar.get(Calendar.YEAR))) {
             yearList.add(calendar);
             calendar = (Calendar) calendar.clone();
-            calendar.add(Calendar.YEAR, 1);
+            calendar.add(Calendar.YEAR, interval);
 
         }
 
@@ -100,7 +128,7 @@ public class CustomDatePickerFragment extends Fragment {
 
 
     // 初始化月份列表
-    private void initMonth() {
+    private void initMonth(int interval) {
 
         Calendar calendar = (Calendar) startCalendar.clone();
 
@@ -109,13 +137,13 @@ public class CustomDatePickerFragment extends Fragment {
 
             monthList.add(calendar);
             calendar = (Calendar) calendar.clone();
-            calendar.add(Calendar.MONTH, 1);
+            calendar.add(Calendar.MONTH, interval);
         }
     }
 
 
     // 初始化天数列表
-    private void initDay() {
+    private void initDay(int interval) {
 
         Calendar calendar = (Calendar) startCalendar.clone();
 
@@ -123,26 +151,31 @@ public class CustomDatePickerFragment extends Fragment {
                 (calendar.after(endCalendar) && calendar.get(Calendar.DAY_OF_MONTH) == endCalendar.get(Calendar.DAY_OF_MONTH))) {
             dayList.add(calendar);
             calendar = (Calendar) calendar.clone();
-            calendar.add(Calendar.DAY_OF_MONTH, 1);
+            calendar.add(Calendar.DAY_OF_MONTH, interval);
 
         }
 
     }
 
     // 初始化 小时列表
-    private void initHour(int min, int max) {
+    private void initHour(int min, int max, int interval) {
 
         hourList.clear();
-        for (int i = min; i <= max; i++) {
-            hourList.add(String.valueOf(i));
+        for (int i = min; i <= max; i += interval) {
+            if (i <= max ) {
+                hourList.add(String.valueOf(i));
+            }
+
         }
     }
     // 初始化分钟列表
-    private void initMinute(int min, int max) {
+    private void initMinute(int min, int max, int interval) {
 
         minuteList.clear();
-        for (int i = min; i <= max; i++) {
+        for (int i = min; i <= max; i+= interval) {
+
             minuteList.add(String.valueOf(i));
+
         }
     }
 
@@ -162,7 +195,7 @@ public class CustomDatePickerFragment extends Fragment {
     private void initView() {
 
         TextView titleTv = view.findViewById(R.id.title_text);
-        titleTv.setText("heheh");
+        titleTv.setText(dateBean.getTitle());
 
         LinearLayout wheelContainer = view.findViewById(R.id.wheelContainer);
 
@@ -389,21 +422,21 @@ public class CustomDatePickerFragment extends Fragment {
             currentCalendar = (Calendar) endCalendar.clone();
 
             int hour_max = endCalendar.get(Calendar.HOUR_OF_DAY);
-            initHour(1, hour_max);
+            initHour(1, hour_max, hourInterval);
 
             int minute_max = endCalendar.get(Calendar.MINUTE);
-            initMinute(1, minute_max);
+            initMinute(0, minute_max, minuteInterval);
         } else if (currentCalendar.before(startCalendar) || currentCalendar.equals(startCalendar)) {
             currentCalendar = (Calendar) startCalendar.clone();
 
             int hour_min = startCalendar.get(Calendar.HOUR_OF_DAY);
-            initHour(hour_min, 24);
+            initHour(hour_min, 24, hourInterval);
 
             int munite_min = startCalendar.get(Calendar.MINUTE);
-            initMinute(munite_min, 60);
+            initMinute(munite_min, 59, minuteInterval);
         } else {
-            initHour(1, 23);
-            initMinute(1, 59);
+            initHour(1, 23, hourInterval);
+            initMinute(0, 59, minuteInterval);
         }
     }
 
