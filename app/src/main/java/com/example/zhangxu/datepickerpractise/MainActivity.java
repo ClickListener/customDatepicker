@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         Calendar endCalendar = Calendar.getInstance();
         endCalendar.set(2018, Calendar.JANUARY, 1, 23, 30);
 
-        Calendar currentCalendar = Calendar.getInstance();
+        final Calendar currentCalendar = Calendar.getInstance();
         currentCalendar.set(2017, Calendar.JANUARY, 2, 13, 30);
 
 
@@ -61,15 +61,19 @@ public class MainActivity extends AppCompatActivity {
 
 
         customDatePicker.init(MainActivity.this)
-//                .addTimeColumn(CustomDatePicker.TimeType.YEAR, new SimpleDateFormat("yyyy"), 5)
-                .addTimeColumn(CustomDatePicker.TimeType.MONTH, new SimpleDateFormat("yyyy-MM"), 5)
-//                .addTimeColumn(CustomDatePicker.TimeType.DAY, new SimpleDateFormat("dd"), 5)
-//                .addTimeColumn(CustomDatePicker.TimeType.HOUR, new SimpleDateFormat("HH"), 5)
-//                .addTimeColumn(CustomDatePicker.TimeType.MINUTE, new SimpleDateFormat("mm"), 5)
+                .addTimeColumn(CustomDatePicker.TimeType.YEAR, new SimpleDateFormat("yyyy"), 1)
+                .addTimeColumn(CustomDatePicker.TimeType.MONTH, new SimpleDateFormat("MM"), 1)
+                .addTimeColumn(CustomDatePicker.TimeType.DAY, new SimpleDateFormat("dd"), 1)
+                .addTimeColumn(CustomDatePicker.TimeType.HOUR, new SimpleDateFormat("HH"), 1)
+                .addTimeColumn(CustomDatePicker.TimeType.MINUTE, new SimpleDateFormat("mm"), 30)
                 .display(R.id.base_extra_layout, new DateCallback() {
                     @Override
                     public void onCallback(Calendar selectCalendar) {
+
+
                         textView.setText(new SimpleDateFormat("yyyy-MM-dd HH:mm").format(selectCalendar.getTime()));
+
+                        customDatePicker.dismiss();
                     }
                 });
 

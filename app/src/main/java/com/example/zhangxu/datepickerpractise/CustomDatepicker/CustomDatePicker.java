@@ -15,6 +15,9 @@ import java.util.Calendar;
 public abstract class CustomDatePicker {
 
 
+    /**
+     * 用于设置时间类型，包含年，月，日，小时，分钟
+     */
     public enum TimeType {
         YEAR,
         MONTH,

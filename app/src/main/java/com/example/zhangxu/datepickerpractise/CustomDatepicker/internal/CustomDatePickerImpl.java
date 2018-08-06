@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentTransaction;
 
 import com.example.zhangxu.datepickerpractise.CustomDatepicker.CustomDatePicker;
 import com.example.zhangxu.datepickerpractise.CustomDatepicker.DateCallback;
+import com.example.zhangxu.datepickerpractise.R;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -90,6 +91,8 @@ public class CustomDatePickerImpl extends CustomDatePicker {
 
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
+        fragmentTransaction.setCustomAnimations(R.anim.bottom_in, R.anim.bottom_out);
+
         Fragment old = fragmentManager.findFragmentByTag(tag);
 
         if (old != null) {
@@ -109,6 +112,9 @@ public class CustomDatePickerImpl extends CustomDatePicker {
     public void dismiss() {
 
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        fragmentTransaction.setCustomAnimations(R.anim.bottom_in, R.anim.bottom_out);
+
         Fragment prev = fragmentManager.findFragmentByTag(tag);
         if (prev != null) {
             fragmentTransaction.remove(prev).commitAllowingStateLoss();
