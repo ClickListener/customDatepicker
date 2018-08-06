@@ -229,7 +229,8 @@ public class CustomDatePickerFragment extends Fragment {
         java.text.DateFormat dateFormat = timeInfo.getDateFormat();
 
 
-        AbstractWheel wheel = new WheelVerticalView(getActivity());
+        AbstractWheel wheel = (AbstractWheel) LayoutInflater.from(getActivity()).inflate(R.layout.wheel_item, null);
+
         wheel.setTag(timeInfo.getTimeType());
         wheel.setLayoutParams(params);
         wheel.setVisibleItems(dateBean.getVisible());
