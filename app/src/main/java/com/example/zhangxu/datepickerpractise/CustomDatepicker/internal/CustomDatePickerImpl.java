@@ -20,7 +20,7 @@ import java.util.Calendar;
 public class CustomDatePickerImpl extends CustomDatePicker {
 
 
-    private FragmentManager fragmentManager;
+
     private String tag = "custom_date_picker_tag";
 
 
@@ -36,7 +36,7 @@ public class CustomDatePickerImpl extends CustomDatePicker {
 
     @Override
     public CustomDatePicker init(FragmentActivity activity) {
-        fragmentManager = activity.getSupportFragmentManager();
+
         return this;
     }
 
@@ -112,8 +112,6 @@ public class CustomDatePickerImpl extends CustomDatePicker {
     public void dismiss() {
 
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
-        fragmentTransaction.setCustomAnimations(R.anim.bottom_in, R.anim.bottom_out);
 
         Fragment prev = fragmentManager.findFragmentByTag(tag);
         if (prev != null) {

@@ -2,6 +2,7 @@ package com.example.zhangxu.datepickerpractise.CustomDatepicker;
 
 import android.app.Activity;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 
 import com.example.zhangxu.datepickerpractise.CustomDatepicker.internal.CustomDatePickerImpl;
 
@@ -15,6 +16,8 @@ import java.util.Calendar;
 public abstract class CustomDatePicker {
 
 
+    protected static FragmentManager fragmentManager;
+
     /**
      * 用于设置时间类型，包含年，月，日，小时，分钟
      */
@@ -26,12 +29,12 @@ public abstract class CustomDatePicker {
         MINUTE
     }
 
-
     /**
      * 创建一个Datapicker
      * @return CustomDatePicker
      */
-    public static CustomDatePicker createDataPicker() {
+    public static CustomDatePicker createDataPicker(FragmentActivity activity) {
+        fragmentManager = activity.getSupportFragmentManager();
         return new CustomDatePickerImpl();
     }
 

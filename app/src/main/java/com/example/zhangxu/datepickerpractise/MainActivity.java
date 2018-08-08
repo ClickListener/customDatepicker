@@ -23,8 +23,8 @@ import butterknife.OnClick;
 public class MainActivity extends AppCompatActivity {
 
 
-    @BindView(R.id.datapickerDialog)
-    Button button;
+//    @BindView(R.id.datapickerDialog)
+//    Button button;
     @BindView(R.id.systemDialog)
     Button systemDialogButton;
     @BindView(R.id.spinnerWheelText)
@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
     @OnClick(R.id.datapickerDialog)
     public void onClick() {
 
-        final CustomDatePicker customDatePicker = CustomDatePicker.createDataPicker();
+        final CustomDatePicker customDatePicker = CustomDatePicker.createDataPicker(this);
 
         Calendar startCalendar = Calendar.getInstance();
         startCalendar.set(2016, Calendar.JULY, 12, 11, 30);
@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         customDatePicker.setStartCalendar(startCalendar)
                 .setEndCalendar(endCalendar)
                 .setCalendar(currentCalendar)
-                .setVisibleItem(3);
+                .setVisibleItem(5);
 
 
         customDatePicker.init(MainActivity.this)
