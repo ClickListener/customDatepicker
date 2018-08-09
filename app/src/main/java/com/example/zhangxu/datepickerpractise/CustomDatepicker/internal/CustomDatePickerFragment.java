@@ -18,6 +18,7 @@ import com.example.zhangxu.datepickerpractise.thirdparty.spinnerwheel.OnWheelScr
 import com.example.zhangxu.datepickerpractise.thirdparty.spinnerwheel.WheelVerticalView;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -38,6 +39,8 @@ public class CustomDatePickerFragment extends Fragment {
     private DateCallback dateCallback;
 
     private DateBean dateBean;
+
+    private TextView titleTv;
 
 
 
@@ -194,8 +197,14 @@ public class CustomDatePickerFragment extends Fragment {
 
     private void initView() {
 
-        TextView titleTv = view.findViewById(R.id.title_text);
-        titleTv.setText(dateBean.getTitle());
+        titleTv = view.findViewById(R.id.title_text);
+        if (dateBean.getTitle() != null) {
+            titleTv.setText(dateBean.getTitle());
+        } else {
+            String currentDate = new SimpleDateFormat("yyyy-MM-dd hh:mm").format(currentCalendar.getTime());
+            titleTv.setText(currentDate);
+        }
+
 
         LinearLayout wheelContainer = view.findViewById(R.id.wheelContainer);
 
@@ -277,6 +286,10 @@ public class CustomDatePickerFragment extends Fragment {
         public void onScrollingFinished(AbstractWheel wheel) {
 
             updateWheel(wheel);
+            if (dateBean.getTitle() == null) {
+                String currentDate = new SimpleDateFormat("yyyy-MM-dd hh:mm").format(currentCalendar.getTime());
+                titleTv.setText(currentDate);
+            }
 
         }
     };
